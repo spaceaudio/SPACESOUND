@@ -82,7 +82,7 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 1.2rem;
+            gap: 1.5rem;
         }
 
         .ambient-btn {
@@ -110,49 +110,6 @@
             background: var(--acid);
         }
 
-        /* VOLUME CONTROL SLIDER */
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #fff;
-            border: 1px solid var(--text);
-            padding: 0.5rem 0.9rem;
-            border-radius: 100px;
-            box-shadow: 2px 2px 0px var(--text);
-        }
-
-        .volume-icon {
-            font-size: 0.8rem;
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 70px;
-            height: 4px;
-            border-radius: 2px;
-            background: #e0e0e0;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--text);
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
-            background: var(--acid);
-        }
-
         .store-pill {
             background: var(--acid);
             color: var(--text);
@@ -166,12 +123,39 @@
             box-shadow: 3px 3px 0px var(--text);
             text-transform: uppercase;
             transition: transform 0.15s, box-shadow 0.15s;
-            margin-left: 0.5rem;
         }
 
         .store-pill:hover {
             transform: translate(-2px, -2px);
             box-shadow: 5px 5px 0px var(--text);
+        }
+
+        /* FLOATING CORNER WIDGET */
+        .widget-corner {
+            position: fixed;
+            bottom: 3rem;
+            left: 3rem;
+            z-index: 90;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--text);
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 4px 4px 0px var(--text);
+        }
+
+        .widget-corner .label {
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .widget-corner .val {
+            font-weight: 700;
+            color: var(--text);
         }
 
         /* MAIN CONTENT - EXTREME SPACED EDITORIAL LAYOUT */
@@ -217,6 +201,7 @@
             background: var(--acid);
             padding: 0 0.5rem;
             color: var(--text);
+            transform: none !important;
         }
 
         .hero-description-block {
@@ -456,130 +441,19 @@
             box-shadow: 4px 4px 0px var(--text);
         }
 
-        /* MOBILE & TABLET RESPONSIVE STYLES */
-        @media (max-width: 900px) {
-            header {
-                padding: 1.2rem 1.5rem;
-                flex-direction: column;
-                gap: 1.2rem;
-                align-items: stretch;
-            }
-
-            .logo {
-                font-size: 1.3rem;
-                text-align: center;
-            }
-
-            .logo span {
-                font-size: 0.55rem;
-            }
-
-            .header-controls {
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 0.8rem;
-            }
-
-            .ambient-btn, .store-pill {
-                padding: 0.5rem 1rem;
-                font-size: 0.7rem;
-            }
-
-            .volume-control {
-                padding: 0.4rem 0.7rem;
-            }
-
-            .volume-slider {
-                width: 50px;
-            }
-
-            main {
-                padding: 14rem 1.5rem 6rem;
-            }
-
-            .hero-section {
-                margin-bottom: 10rem;
-            }
-
-            .hero-title {
-                font-size: clamp(3rem, 14vw, 5.5rem);
-                margin-bottom: 2rem;
-            }
-
-            .hero-description-block {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-                margin-top: 3rem;
-            }
-
-            .hero-p {
-                font-size: 1.1rem;
-            }
-
-            .section-separator {
-                margin-bottom: 4rem;
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .section-separator h2 {
-                font-size: 2.2rem;
-            }
-
-            .showcase-stack {
-                gap: 5rem;
-                margin-bottom: 10rem;
-            }
-
-            .project-row {
-                grid-template-columns: 1fr;
-                gap: 2.5rem;
-                padding: 2rem 1.5rem;
-                border-radius: 16px;
-            }
-
-            .project-title {
-                font-size: 1.8rem;
-            }
-
-            .project-desc {
-                font-size: 1rem;
-            }
-
-            .reel-container {
-                max-width: 100%;
-                height: 420px;
-            }
-
-            .about-editorial {
-                padding: 3rem 1.5rem;
-                border-radius: 16px;
-                margin-bottom: 6rem;
-            }
-
-            .about-heading {
-                font-size: 2rem;
-            }
-
-            .about-body {
-                font-size: 1.05rem;
-            }
-
-            .modal-drawer {
-                max-width: 100%;
-                padding: 4rem 1.5rem;
-            }
-
-            .close-btn {
-                top: 1.5rem;
-                right: 1.5rem;
-            }
+        @media (max-width: 1024px) {
+            header { padding: 1.5rem 2rem; }
+            main { padding: 12rem 2rem 8rem; }
+            .hero-description-block { grid-template-columns: 1fr; gap: 3rem; }
+            .project-row { grid-template-columns: 1fr; gap: 3rem; padding: 3rem; }
+            .about-editorial { padding: 4rem 2rem; }
+            .widget-corner { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- CANVAS BACKGROUND (STABLE ORGANIC WAVES) -->
+    <!-- CANVAS BACKGROUND (CONTOUR WAVES & SOFT BLOBS) -->
     <canvas id="bg-canvas"></canvas>
 
     <!-- HEADER / NAV -->
@@ -592,13 +466,15 @@
             <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
                 <span id="ambient-dot">🍃</span> WIND & LEAVES
             </button>
-            <div class="volume-control">
-                <span class="volume-icon">🔊</span>
-                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.4" oninput="updateVolume(this.value)">
-            </div>
             <a href="#" class="store-pill" onclick="openModal('contact'); return false;">CONTACT</a>
         </div>
     </header>
+
+    <!-- FLOATING CORNER WIDGET -->
+    <div class="widget-corner">
+        <span class="label">CURRENT STAGE</span>
+        <span class="val">STUDIO 01 / HIGH-FREQ</span>
+    </div>
 
     <!-- MAIN EDITORIAL CONTENT -->
     <main>
@@ -714,7 +590,7 @@
     </div>
 
     <script>
-        /* STABLE ORGANIC CANVAS BACKGROUND WAVES */
+        /* BACKGROUND CONTOUR WAVES CANVAS */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -731,20 +607,22 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             time += 0.003;
 
-            // Organic light background blob
+            // Soft organic background blob
             ctx.beginPath();
-            ctx.ellipse(canvas.width * 0.5, canvas.height * 0.25, 340, 200, Math.PI / 6, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(235, 233, 224, 0.65)';
+            const blobX = canvas.width * 0.5 + Math.sin(time) * 40;
+            const blobY = canvas.height * 0.25 + Math.cos(time * 0.8) * 30;
+            ctx.ellipse(blobX, blobY, 320, 180, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
             ctx.fill();
 
-            // Smooth contour waves
-            ctx.strokeStyle = 'rgba(13, 13, 16, 0.09)';
+            // Fine contour waves
+            ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
             ctx.lineWidth = 1.2;
 
             const wavePaths = [
-                { yOffset: 0.18, amp: 80, freq: 0.0012, speed: 1 },
-                { yOffset: 0.38, amp: 110, freq: 0.0009, speed: 0.8 },
-                { yOffset: 0.62, amp: 90, freq: 0.0011, speed: 1.2 },
+                { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
+                { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
+                { yOffset: 0.65, amp: 90, freq: 0.0011, speed: 1.2 },
                 { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
             ];
 
@@ -753,11 +631,9 @@
                 const startY = canvas.height * w.yOffset;
                 ctx.moveTo(0, startY);
 
-                for (let x = 0; x <= canvas.width; x += 15) {
-                    const y = startY + 
-                              Math.sin(x * w.freq + time * w.speed) * w.amp +
+                for (let x = 0; x <= canvas.width; x += 20) {
+                    const y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
                               Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
-
                     ctx.lineTo(x, y);
                 }
                 ctx.stroke();
@@ -767,32 +643,130 @@
         }
         drawContourBackground();
 
-        /* CUSTOM AMBIENT AUDIO PLAYER WITH VOLUME CONTROL */
-        const ambientAudio = new Audio('your-audio-file.mp3'); 
-        ambientAudio.loop = true;
-        ambientAudio.volume = 0.4;
-
+        /* REALISTIC WIND & LEAVES AMBIENT SOUND GENERATOR */
+        let audioCtx = null;
         let isAmbientPlaying = false;
+        let windFilter = null;
+        let windGain = null;
+        let windOsc = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
 
         function toggleAmbient() {
+            initAudio();
             const btn = document.getElementById('ambient-btn');
 
             if (!isAmbientPlaying) {
-                ambientAudio.play().then(() => {
-                    btn.classList.add('active');
-                    isAmbientPlaying = true;
-                }).catch(err => {
-                    console.log("Audio playback failed (check file name/path):", err);
-                });
+                startWindAndLeaves();
+                btn.classList.add('active');
+                isAmbientPlaying = true;
             } else {
-                ambientAudio.pause();
+                stopWindAndLeaves();
                 btn.classList.remove('active');
                 isAmbientPlaying = false;
             }
         }
 
-        function updateVolume(val) {
-            ambientAudio.volume = parseFloat(val);
+        function startWindAndLeaves() {
+            // 1. Wind Noise Buffer
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.012; // Lower volume base
+                b6 = white * 0.115926;
+            }
+
+            const windNoise = audioCtx.createBufferSource();
+            windNoise.buffer = noiseBuffer;
+            windNoise.loop = true;
+
+            windFilter = audioCtx.createBiquadFilter();
+            windFilter.type = 'lowpass';
+            windFilter.frequency.setValueAtTime(220, audioCtx.currentTime);
+
+            windGain = audioCtx.createGain();
+            windGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+
+            windNoise.connect(windFilter);
+            windFilter.connect(windGain);
+            windGain.connect(audioCtx.destination);
+
+            windNoise.start();
+
+            // 2. Slow LFO for Gusting Wind Motion
+            windOsc = audioCtx.createOscillator();
+            windOsc.frequency.setValueAtTime(0.12, audioCtx.currentTime);
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.setValueAtTime(140, audioCtx.currentTime);
+
+            windOsc.connect(lfoGain);
+            lfoGain.connect(windFilter.frequency);
+            windOsc.start();
+
+            // 3. Periodic Rustling Leaves (High-frequency noise bursts)
+            window.leavesInterval = setInterval(() => {
+                if (isAmbientPlaying && Math.random() > 0.3) {
+                    triggerLeafRustle();
+                }
+            }, 2500);
+        }
+
+        function triggerLeafRustle() {
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const duration = 0.1 + Math.random() * 0.25;
+
+            const bufferSize = audioCtx.sampleRate * duration;
+            const leafBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = leafBuffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+            }
+
+            const leafSource = audioCtx.createBufferSource();
+            leafSource.buffer = leafBuffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1800 + Math.random() * 1200, now);
+            filter.Q.setValueAtTime(1.5, now);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.015, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+            leafSource.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            leafSource.start(now);
+        }
+
+        function stopWindAndLeaves() {
+            if (windGain) {
+                windGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+            }
+            if (window.leavesInterval) clearInterval(window.leavesInterval);
         }
 
         /* MODAL CONTROLS */
