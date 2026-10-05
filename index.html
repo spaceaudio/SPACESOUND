@@ -82,7 +82,7 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.2rem;
         }
 
         .ambient-btn {
@@ -110,6 +110,49 @@
             background: var(--acid);
         }
 
+        /* VOLUME CONTROL SLIDER */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fff;
+            border: 1px solid var(--text);
+            padding: 0.5rem 0.9rem;
+            border-radius: 100px;
+            box-shadow: 2px 2px 0px var(--text);
+        }
+
+        .volume-icon {
+            font-size: 0.8rem;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px;
+            height: 4px;
+            border-radius: 2px;
+            background: #e0e0e0;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            background: var(--acid);
+        }
+
         .store-pill {
             background: var(--acid);
             color: var(--text);
@@ -123,39 +166,12 @@
             box-shadow: 3px 3px 0px var(--text);
             text-transform: uppercase;
             transition: transform 0.15s, box-shadow 0.15s;
+            margin-left: 0.5rem;
         }
 
         .store-pill:hover {
             transform: translate(-2px, -2px);
             box-shadow: 5px 5px 0px var(--text);
-        }
-
-        /* FLOATING CORNER WIDGET */
-        .widget-corner {
-            position: fixed;
-            bottom: 3rem;
-            left: 3rem;
-            z-index: 90;
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid var(--text);
-            padding: 1.2rem;
-            border-radius: 8px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 4px 4px 0px var(--text);
-        }
-
-        .widget-corner .label {
-            color: var(--text-dim);
-            text-transform: uppercase;
-            margin-bottom: 0.4rem;
-            display: block;
-        }
-
-        .widget-corner .val {
-            font-weight: 700;
-            color: var(--text);
         }
 
         /* MAIN CONTENT - EXTREME SPACED EDITORIAL LAYOUT */
@@ -201,7 +217,6 @@
             background: var(--acid);
             padding: 0 0.5rem;
             color: var(--text);
-            transform: none !important;
         }
 
         .hero-description-block {
@@ -443,7 +458,6 @@
 
         /* MOBILE & TABLET RESPONSIVE STYLES */
         @media (max-width: 900px) {
-            /* Header adjustments for smaller screens */
             header {
                 padding: 1.2rem 1.5rem;
                 flex-direction: column;
@@ -479,12 +493,10 @@
                 width: 50px;
             }
 
-            /* Main Layout padding */
             main {
                 padding: 14rem 1.5rem 6rem;
             }
 
-            /* Hero Title scale down */
             .hero-section {
                 margin-bottom: 10rem;
             }
@@ -504,7 +516,6 @@
                 font-size: 1.1rem;
             }
 
-            /* Section headers */
             .section-separator {
                 margin-bottom: 4rem;
                 flex-direction: column;
@@ -515,7 +526,6 @@
                 font-size: 2.2rem;
             }
 
-            /* Stacked Project Cards */
             .showcase-stack {
                 gap: 5rem;
                 margin-bottom: 10rem;
@@ -541,7 +551,6 @@
                 height: 420px;
             }
 
-            /* About Section */
             .about-editorial {
                 padding: 3rem 1.5rem;
                 border-radius: 16px;
@@ -556,7 +565,6 @@
                 font-size: 1.05rem;
             }
 
-            /* Contact Modal Drawer full width on mobile */
             .modal-drawer {
                 max-width: 100%;
                 padding: 4rem 1.5rem;
@@ -571,7 +579,7 @@
 </head>
 <body>
 
-    <!-- CANVAS BACKGROUND (CONTOUR WAVES & SOFT BLOBS) -->
+    <!-- CANVAS BACKGROUND (STABLE ORGANIC WAVES) -->
     <canvas id="bg-canvas"></canvas>
 
     <!-- HEADER / NAV -->
@@ -584,11 +592,13 @@
             <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
                 <span id="ambient-dot">🍃</span> WIND & LEAVES
             </button>
+            <div class="volume-control">
+                <span class="volume-icon">🔊</span>
+                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.4" oninput="updateVolume(this.value)">
+            </div>
             <a href="#" class="store-pill" onclick="openModal('contact'); return false;">CONTACT</a>
         </div>
     </header>
-
-
 
     <!-- MAIN EDITORIAL CONTENT -->
     <main>
@@ -704,103 +714,7 @@
     </div>
 
     <script>
-        
-        /* INTERACTIVE CONTOUR WAVES & CURSOR PHYSICS CANVAS */
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-
-let mouse = {
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2,
-    targetX: window.innerWidth / 2,
-    targetY: window.innerHeight / 2
-};
-
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-// Track mouse cursor movement
-window.addEventListener('mousemove', (e) => {
-    mouse.targetX = e.clientX;
-    mouse.targetY = e.clientY;
-});
-
-// Touch support for mobile devices
-window.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) {
-        mouse.targetX = e.touches[0].clientX;
-        mouse.targetY = e.touches[0].clientY;
-    }
-}, { passive: true });
-
-let time = 0;
-
-function drawContourBackground() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    time += 0.003;
-
-    // Smooth mouse interpolation (spring/easing effect)
-    mouse.x += (mouse.targetX - mouse.x) * 0.05;
-    mouse.y += (mouse.targetY - mouse.y) * 0.05;
-
-    // Organic background blob follows cursor gently
-    ctx.beginPath();
-    const blobX = canvas.width * 0.5 + (mouse.x - canvas.width * 0.5) * 0.25;
-    const blobY = canvas.height * 0.25 + (mouse.y - canvas.height * 0.25) * 0.25;
-    ctx.ellipse(blobX, blobY, 340, 200, Math.PI / 6, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(235, 233, 224, 0.65)';
-    ctx.fill();
-
-    // Fine contour waves with cursor interaction
-    ctx.strokeStyle = 'rgba(13, 13, 16, 0.09)';
-    ctx.lineWidth = 1.2;
-
-    const wavePaths = [
-        { yOffset: 0.18, amp: 80, freq: 0.0012, speed: 1 },
-        { yOffset: 0.38, amp: 110, freq: 0.0009, speed: 0.8 },
-        { yOffset: 0.62, amp: 90, freq: 0.0011, speed: 1.2 },
-        { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
-    ];
-
-    wavePaths.forEach((w) => {
-        ctx.beginPath();
-        const startY = canvas.height * w.yOffset;
-        ctx.moveTo(0, startY);
-
-        for (let x = 0; x <= canvas.width; x += 15) {
-            // Distance from current wave point to mouse position
-            const dx = x - mouse.x;
-            const dy = startY - mouse.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            // Cursor wave distortion force
-            const maxDist = 280;
-            let mouseFactor = 0;
-            if (dist < maxDist) {
-                mouseFactor = Math.cos((dist / maxDist) * Math.PI * 0.5) * 45;
-            }
-
-            const y = startY + 
-                      Math.sin(x * w.freq + time * w.speed) * w.amp +
-                      Math.cos(x * 0.0005 + time) * (w.amp * 0.5) - 
-                      mouseFactor;
-
-            ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-    });
-
-    requestAnimationFrame(drawContourBackground);
-}
-
-// Start animation loop
-drawContourBackground();
-        
-        /* BACKGROUND CONTOUR WAVES CANVAS */
+        /* STABLE ORGANIC CANVAS BACKGROUND WAVES */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -817,22 +731,20 @@ drawContourBackground();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             time += 0.003;
 
-            // Soft organic background blob
+            // Organic light background blob
             ctx.beginPath();
-            const blobX = canvas.width * 0.5 + Math.sin(time) * 40;
-            const blobY = canvas.height * 0.25 + Math.cos(time * 0.8) * 30;
-            ctx.ellipse(blobX, blobY, 320, 180, Math.PI / 6, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
+            ctx.ellipse(canvas.width * 0.5, canvas.height * 0.25, 340, 200, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(235, 233, 224, 0.65)';
             ctx.fill();
 
-            // Fine contour waves
-            ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
+            // Smooth contour waves
+            ctx.strokeStyle = 'rgba(13, 13, 16, 0.09)';
             ctx.lineWidth = 1.2;
 
             const wavePaths = [
-                { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
-                { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
-                { yOffset: 0.65, amp: 90, freq: 0.0011, speed: 1.2 },
+                { yOffset: 0.18, amp: 80, freq: 0.0012, speed: 1 },
+                { yOffset: 0.38, amp: 110, freq: 0.0009, speed: 0.8 },
+                { yOffset: 0.62, amp: 90, freq: 0.0011, speed: 1.2 },
                 { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
             ];
 
@@ -841,9 +753,11 @@ drawContourBackground();
                 const startY = canvas.height * w.yOffset;
                 ctx.moveTo(0, startY);
 
-                for (let x = 0; x <= canvas.width; x += 20) {
-                    const y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
+                for (let x = 0; x <= canvas.width; x += 15) {
+                    const y = startY + 
+                              Math.sin(x * w.freq + time * w.speed) * w.amp +
                               Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
+
                     ctx.lineTo(x, y);
                 }
                 ctx.stroke();
@@ -852,30 +766,43 @@ drawContourBackground();
             requestAnimationFrame(drawContourBackground);
         }
         drawContourBackground();
-        
-/* CUSTOM AMBIENT AUDIO FILE */
-const ambientAudio = new Audio('120_Ambience_01.wav'); // <--- Change to your audio file name
-ambientAudio.loop = true; // Loops automatically
-ambientAudio.volume = 0.2; // Volume level between 0.0 and 1.0
 
-let isAmbientPlaying = false;
+        /* CUSTOM AMBIENT AUDIO PLAYER WITH VOLUME CONTROL */
+        const ambientAudio = new Audio('your-audio-file.mp3'); 
+        ambientAudio.loop = true;
+        ambientAudio.volume = 0.4;
 
-function toggleAmbient() {
-    const btn = document.getElementById('ambient-btn');
+        let isAmbientPlaying = false;
 
-    if (!isAmbientPlaying) {
-        ambientAudio.play().then(() => {
-            btn.classList.add('active');
-            isAmbientPlaying = true;
-        }).catch(err => {
-            console.error("Audio play failed:", err);
-        });
-    } else {
-        ambientAudio.pause();
-        btn.classList.remove('active');
-        isAmbientPlaying = false;
-    }
-}
+        function toggleAmbient() {
+            const btn = document.getElementById('ambient-btn');
+
+            if (!isAmbientPlaying) {
+                ambientAudio.play().then(() => {
+                    btn.classList.add('active');
+                    isAmbientPlaying = true;
+                }).catch(err => {
+                    console.log("Audio playback failed (check file name/path):", err);
+                });
+            } else {
+                ambientAudio.pause();
+                btn.classList.remove('active');
+                isAmbientPlaying = false;
+            }
+        }
+
+        function updateVolume(val) {
+            ambientAudio.volume = parseFloat(val);
+        }
+
+        /* MODAL CONTROLS */
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
     </script>
 </body>
 </html>
