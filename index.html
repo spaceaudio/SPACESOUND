@@ -786,6 +786,28 @@ function toggleAmbient() {
 function updateVolume(val) {
     ambientAudio.volume = parseFloat(val);
 }
+       
+        // Sound effects for the ambient button using local files
+const hoverSound = new Audio('assets/hover.mp3');
+const clickSound = new Audio('assets/click.mp3');
+
+// Adjust volume (0.0 to 1.0)
+hoverSound.volume = 0.2;
+clickSound.volume = 0.4;
+
+// Attach hover and click events to the ambient button
+const ambientBtn = document.getElementById('ambient-btn');
+if (ambientBtn) {
+    ambientBtn.addEventListener('mouseenter', () => {
+        hoverSound.currentTime = 0;
+        hoverSound.play().catch(e => {});
+    });
+
+    ambientBtn.addEventListener('click', () => {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    });
+}
     </script>
 </body>
 </html>
