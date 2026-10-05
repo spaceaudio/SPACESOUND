@@ -701,58 +701,71 @@
     </div>
 
     <script>
-        /* BACKGROUND CONTOUR WAVES CANVAS */
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
+       /* BACKGROUND CONTOUR WAVES CANVAS WITH MOUSE TRACKING */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Track mouse position (start centered)
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let blobX = mouseX;
+let blobY = mouseY;
+
+window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+let time = 0;
+
+function drawContourBackground() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    time += 0.003;
+
+    // Smoothly glide the blob towards the mouse position (0.05 controls the lag/smoothness)
+    blobX += (mouseX - blobX) * 0.05;
+    blobY += (mouseY - blobY) * 0.05;
+
+    // Soft organic background blob following the mouse
+    ctx.beginPath();
+    ctx.ellipse(blobX, blobY, 320, 180, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
+    ctx.fill();
+
+    // Fine contour waves
+    ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
+    ctx.lineWidth = 1.4;
+
+    const wavePaths = [
+        { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
+        { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
+        { yOffset: 0.65, amp: 90, freq: 0.0011, speed: 1.2 },
+        { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
+    ];
+
+    wavePaths.forEach((w) => {
+        ctx.beginPath();
+        const startY = canvas.height * w.yOffset;
+        ctx.moveTo(0, startY);
+
+        for (let x = 0; x <= canvas.width; x += 20) {
+            const y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
+                      Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
+            ctx.lineTo(x, y);
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        ctx.stroke();
+    });
 
-        let time = 0;
-
-        function drawContourBackground() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            time += 0.003;
-
-            // Soft organic background blob
-            ctx.beginPath();
-            const blobX = canvas.width * 0.5 + Math.sin(time) * 40;
-            const blobY = canvas.height * 0.25 + Math.cos(time * 0.8) * 30;
-            ctx.ellipse(blobX, blobY, 320, 180, Math.PI / 6, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
-            ctx.fill();
-
-            // Fine contour waves
-            ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
-            ctx.lineWidth = 1.4;
-
-            const wavePaths = [
-                { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
-                { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
-                { yOffset: 0.65, amp: 90, freq: 0.0011, speed: 1.2 },
-                { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
-            ];
-
-            wavePaths.forEach((w) => {
-                ctx.beginPath();
-                const startY = canvas.height * w.yOffset;
-                ctx.moveTo(0, startY);
-
-                for (let x = 0; x <= canvas.width; x += 20) {
-                    const y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
-                              Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
-                    ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-            });
-
-            requestAnimationFrame(drawContourBackground);
-        }
-        drawContourBackground();
+    requestAnimationFrame(drawContourBackground);
+}
+drawContourBackground();
 
        /* CUSTOM AMBIENT AUDIO PLAYER WITH VOLUME CONTROL */
 const ambientAudio = new Audio('120_Ambience_01.wav'); 
