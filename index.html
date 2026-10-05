@@ -452,6 +452,128 @@
         
         .volume-control {
     background: var(--acid) !important;
+    /* MOBILE & TABLET RESPONSIVE FIXES */
+        @media (max-width: 900px) {
+            header {
+                padding: 1.2rem 1.5rem;
+                flex-direction: column;
+                gap: 1.2rem;
+                align-items: stretch;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+                text-align: center;
+            }
+
+            .logo span {
+                font-size: 0.55rem;
+            }
+
+            .header-controls {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+
+            .ambient-btn, .store-pill {
+                padding: 0.5rem 1rem;
+                font-size: 0.7rem;
+            }
+
+            .volume-control {
+                padding: 0.4rem 0.7rem;
+                background: var(--acid) !important;
+            }
+
+            .volume-slider {
+                width: 55px;
+            }
+
+            main {
+                padding: 14rem 1.5rem 6rem;
+            }
+
+            .hero-section {
+                margin-bottom: 10rem;
+            }
+
+            .hero-title {
+                font-size: clamp(2.8rem, 13vw, 5.5rem);
+                margin-bottom: 2rem;
+                line-height: 0.9;
+            }
+
+            .hero-description-block {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+                margin-top: 3rem;
+            }
+
+            .hero-p {
+                font-size: 1.1rem;
+                max-width: 100%;
+            }
+
+            .section-separator {
+                margin-bottom: 4rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .section-separator h2 {
+                font-size: 2.2rem;
+            }
+
+            .showcase-stack {
+                gap: 5rem;
+                margin-bottom: 10rem;
+            }
+
+            .project-row {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+                padding: 2rem 1.5rem;
+                border-radius: 16px;
+            }
+
+            .project-title {
+                font-size: 1.8rem;
+            }
+
+            .project-desc {
+                font-size: 1rem;
+            }
+
+            .reel-container {
+                max-width: 100%;
+                height: 420px;
+            }
+
+            .about-editorial {
+                padding: 3rem 1.5rem;
+                border-radius: 16px;
+                margin-bottom: 6rem;
+            }
+
+            .about-heading {
+                font-size: 2rem;
+            }
+
+            .about-body {
+                font-size: 1.05rem;
+            }
+
+            .modal-drawer {
+                max-width: 100%;
+                padding: 4rem 1.5rem;
+            }
+
+            .close-btn {
+                top: 1.5rem;
+                right: 1.5rem;
+            }
+        }
 }
     </style>
 </head>
