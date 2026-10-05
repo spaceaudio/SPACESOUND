@@ -586,6 +586,94 @@
     </div>
 
     <script>
+        
+        /* INTERACTIVE CONTOUR WAVES & CURSOR PHYSICS CANVAS */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+let mouse = {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+    targetX: window.innerWidth / 2,
+    targetY: window.innerHeight / 2
+};
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Track mouse cursor movement
+window.addEventListener('mousemove', (e) => {
+    mouse.targetX = e.clientX;
+    mouse.targetY = e.clientY;
+});
+
+let time = 0;
+
+function drawContourBackground() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    time += 0.003;
+
+    // Smooth mouse interpolation (spring/easing effect)
+    mouse.x += (mouse.targetX - mouse.x) * 0.05;
+    mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+    // Organic background blob follows cursor gently
+    ctx.beginPath();
+    const blobX = canvas.width * 0.5 + (mouse.x - canvas.width * 0.5) * 0.25;
+    const blobY = canvas.height * 0.25 + (mouse.y - canvas.height * 0.25) * 0.25;
+    ctx.ellipse(blobX, blobY, 340, 200, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(235, 233, 224, 0.65)';
+    ctx.fill();
+
+    // Fine contour waves with cursor interaction
+    ctx.strokeStyle = 'rgba(13, 13, 16, 0.09)';
+    ctx.lineWidth = 1.2;
+
+    const wavePaths = [
+        { yOffset: 0.18, amp: 80, freq: 0.0012, speed: 1 },
+        { yOffset: 0.38, amp: 110, freq: 0.0009, speed: 0.8 },
+        { yOffset: 0.62, amp: 90, freq: 0.0011, speed: 1.2 },
+        { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
+    ];
+
+    wavePaths.forEach((w) => {
+        ctx.beginPath();
+        const startY = canvas.height * w.yOffset;
+        ctx.moveTo(0, startY);
+
+        for (let x = 0; x <= canvas.width; x += 15) {
+            // Distance from current wave point to mouse position
+            const dx = x - mouse.x;
+            const dy = startY - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            // Cursor wave distortion force
+            const maxDist = 280;
+            let mouseFactor = 0;
+            if (dist < maxDist) {
+                mouseFactor = Math.cos((dist / maxDist) * Math.PI * 0.5) * 45;
+            }
+
+            const y = startY + 
+                      Math.sin(x * w.freq + time * w.speed) * w.amp +
+                      Math.cos(x * 0.0005 + time) * (w.amp * 0.5) - 
+                      mouseFactor;
+
+            ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    });
+
+    requestAnimationFrame(drawContourBackground);
+}
+
+// Start animation loop
+drawContourBackground();
+        
         /* BACKGROUND CONTOUR WAVES CANVAS */
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
