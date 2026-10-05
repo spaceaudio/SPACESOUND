@@ -638,141 +638,30 @@
             requestAnimationFrame(drawContourBackground);
         }
         drawContourBackground();
+        
+/* CUSTOM AMBIENT AUDIO FILE */
+const ambientAudio = new Audio('120_Ambience_01.wav'); // <--- Change to your audio file name
+ambientAudio.loop = true; // Loops automatically
+ambientAudio.volume = 0.2; // Volume level between 0.0 and 1.0
 
-        /* REALISTIC WIND & LEAVES AMBIENT SOUND GENERATOR */
-        let audioCtx = null;
-        let isAmbientPlaying = false;
-        let windFilter = null;
-        let windGain = null;
-        let windOsc = null;
+let isAmbientPlaying = false;
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
+function toggleAmbient() {
+    const btn = document.getElementById('ambient-btn');
 
-        function toggleAmbient() {
-            initAudio();
-            const btn = document.getElementById('ambient-btn');
-
-            if (!isAmbientPlaying) {
-                startWindAndLeaves();
-                btn.classList.add('active');
-                isAmbientPlaying = true;
-            } else {
-                stopWindAndLeaves();
-                btn.classList.remove('active');
-                isAmbientPlaying = false;
-            }
-        }
-
-        function startWindAndLeaves() {
-            // 1. Wind Noise Buffer
-            const bufferSize = audioCtx.sampleRate * 2;
-            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-
-            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-            for (let i = 0; i < bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                b0 = 0.99886 * b0 + white * 0.0555179;
-                b1 = 0.99332 * b1 + white * 0.0750759;
-                b2 = 0.96900 * b2 + white * 0.1538520;
-                b3 = 0.86650 * b3 + white * 0.3104856;
-                b4 = 0.55000 * b4 + white * 0.5329522;
-                b5 = -0.7616 * b5 - white * 0.0168980;
-                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-                output[i] *= 0.012; // Lower volume base
-                b6 = white * 0.115926;
-            }
-
-            const windNoise = audioCtx.createBufferSource();
-            windNoise.buffer = noiseBuffer;
-            windNoise.loop = true;
-
-            windFilter = audioCtx.createBiquadFilter();
-            windFilter.type = 'lowpass';
-            windFilter.frequency.setValueAtTime(220, audioCtx.currentTime);
-
-            windGain = audioCtx.createGain();
-            windGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-
-            windNoise.connect(windFilter);
-            windFilter.connect(windGain);
-            windGain.connect(audioCtx.destination);
-
-            windNoise.start();
-
-            // 2. Slow LFO for Gusting Wind Motion
-            windOsc = audioCtx.createOscillator();
-            windOsc.frequency.setValueAtTime(0.12, audioCtx.currentTime);
-            const lfoGain = audioCtx.createGain();
-            lfoGain.gain.setValueAtTime(140, audioCtx.currentTime);
-
-            windOsc.connect(lfoGain);
-            lfoGain.connect(windFilter.frequency);
-            windOsc.start();
-
-            // 3. Periodic Rustling Leaves (High-frequency noise bursts)
-            window.leavesInterval = setInterval(() => {
-                if (isAmbientPlaying && Math.random() > 0.3) {
-                    triggerLeafRustle();
-                }
-            }, 2500);
-        }
-
-        function triggerLeafRustle() {
-            if (!audioCtx) return;
-
-            const now = audioCtx.currentTime;
-            const duration = 0.1 + Math.random() * 0.25;
-
-            const bufferSize = audioCtx.sampleRate * duration;
-            const leafBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = leafBuffer.getChannelData(0);
-
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
-            }
-
-            const leafSource = audioCtx.createBufferSource();
-            leafSource.buffer = leafBuffer;
-
-            const filter = audioCtx.createBiquadFilter();
-            filter.type = 'bandpass';
-            filter.frequency.setValueAtTime(1800 + Math.random() * 1200, now);
-            filter.Q.setValueAtTime(1.5, now);
-
-            const gain = audioCtx.createGain();
-            gain.gain.setValueAtTime(0.015, now);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-            leafSource.connect(filter);
-            filter.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            leafSource.start(now);
-        }
-
-        function stopWindAndLeaves() {
-            if (windGain) {
-                windGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
-            }
-            if (window.leavesInterval) clearInterval(window.leavesInterval);
-        }
-
-        /* MODAL CONTROLS */
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+    if (!isAmbientPlaying) {
+        ambientAudio.play().then(() => {
+            btn.classList.add('active');
+            isAmbientPlaying = true;
+        }).catch(err => {
+            console.error("Audio play failed:", err);
+        });
+    } else {
+        ambientAudio.pause();
+        btn.classList.remove('active');
+        isAmbientPlaying = false;
+    }
+}
     </script>
 </body>
 </html>
