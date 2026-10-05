@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPACE SOUND — Foley Recording & Game Audio Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #f7f6f2;
+            --text: #0d0d10;
+            --text-dim: #707078;
+            --acid: #d4ff00;
+            --border: rgba(13, 13, 16, 0.12);
+            --card-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* BACKGROUND WAVE CANVAS */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(247, 246, 242, 0.7);
+            backdrop-filter: blur(20px);
+        }
+
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--text);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            display: block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-top: 0.2rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .ambient-btn {
+            background: #fff;
+            border: 1px solid var(--text);
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 2px 2px 0px var(--text);
+        }
+
+        .ambient-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px var(--text);
+        }
+
+        .ambient-btn.active {
+            background: var(--acid);
+        }
+
+        .store-pill {
+            background: var(--acid);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            padding: 0.7rem 1.6rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            border: 1px solid var(--text);
+            box-shadow: 3px 3px 0px var(--text);
+            text-transform: uppercase;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .store-pill:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--text);
+        }
+
+        /* FLOATING CORNER WIDGET */
+        .widget-corner {
+            position: fixed;
+            bottom: 3rem;
+            left: 3rem;
+            z-index: 90;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--text);
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 4px 4px 0px var(--text);
+        }
+
+        .widget-corner .label {
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .widget-corner .val {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* MAIN CONTENT - EXTREME SPACED EDITORIAL LAYOUT */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 18rem 4rem 15rem;
+        }
+
+        .hero-section {
+            margin-bottom: 22rem;
+            position: relative;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            color: var(--text-dim);
+            padding-left: 1rem;
+            border-left: 2px solid var(--acid);
+        }
+
+        /* PERFECTLY STRAIGHT HEADLINE */
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(4.5rem, 11vw, 11rem);
+            font-weight: 800;
+            line-height: 0.85;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            margin-bottom: 4rem;
+        }
+
+        .hero-title .accent-block {
+            display: inline-block;
+            background: var(--acid);
+            padding: 0 0.5rem;
+            color: var(--text);
+            transform: none !important;
+        }
+
+        .hero-description-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: flex-end;
+            margin-top: 6rem;
+        }
+
+        .hero-p {
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+            line-height: 1.5;
+            color: #2c2c32;
+            font-weight: 400;
+            max-width: 580px;
+        }
+
+        .hero-meta-spec {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+
+        /* SECTION HEADERS */
+        .section-separator {
+            border-top: 1px solid var(--text);
+            padding-top: 2rem;
+            margin-bottom: 8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .section-separator h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5vw, 4.5rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+        }
+
+        .section-num {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dim);
+        }
+
+        /* PROJECT REEL SHOWCASE */
+        .showcase-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12rem;
+            margin-bottom: 22rem;
+        }
+
+        .project-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 5rem;
+            border-radius: 24px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.02);
+            transition: border-color 0.3s;
+        }
+
+        .project-row:hover {
+            border-color: var(--text);
+        }
+
+        .project-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .project-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .project-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 2rem;
+        }
+
+        /* REEL VIDEO CONTAINER */
+        .reel-container {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            height: 500px;
+            background: #0d0d10;
+            border: 2px solid var(--text);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 8px 8px 0px var(--text);
+            margin: 0 auto;
+        }
+
+        .reel-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reel-overlay-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(13, 13, 16, 0.75);
+            color: var(--acid);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.4rem 0.8rem;
+            border-radius: 100px;
+            backdrop-filter: blur(8px);
+        }
+
+        /* ABOUT EDITORIAL */
+        .about-editorial {
+            background: #fff;
+            border: 1px solid var(--text);
+            border-radius: 24px;
+            padding: 8rem 6rem;
+            box-shadow: 12px 12px 0px var(--text);
+            margin-bottom: 10rem;
+        }
+
+        .about-heading {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            line-height: 0.95;
+        }
+
+        .about-body {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+        }
+
+        /* CONTACT MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(247, 246, 242, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-end;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-drawer {
+            width: 100%;
+            max-width: 650px;
+            height: 100%;
+            background: #fff;
+            border-left: 1px solid var(--text);
+            padding: 6rem 4rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 3rem;
+            right: 3rem;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--text);
+        }
+
+        .submit-btn {
+            background: var(--acid);
+            color: var(--text);
+            border: 1px solid var(--text);
+            padding: 1.2rem 2.5rem;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--text);
+        }
+
+        @media (max-width: 1024px) {
+            header { padding: 1.5rem 2rem; }
+            main { padding: 12rem 2rem 8rem; }
+            .hero-description-block { grid-template-columns: 1fr; gap: 3rem; }
+            .project-row { grid-template-columns: 1fr; gap: 3rem; padding: 3rem; }
+            .about-editorial { padding: 4rem 2rem; }
+            .widget-corner { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CANVAS BACKGROUND (CONTOUR WAVES & SOFT BLOBS) -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- HEADER / NAV -->
+    <header>
+        <a href="#" class="logo">
+            SPACE SOUND
+            <span>FOLEY RECORDING & GAME AUDIO</span>
+        </a>
+        <div class="header-controls">
+            <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
+                <span id="ambient-dot">🍃</span> WIND & LEAVES
+            </button>
+            <a href="#" class="store-pill" onclick="openModal('contact'); return false;">CONTACT</a>
+        </div>
+    </header>
+
+    <!-- FLOATING CORNER WIDGET -->
+    <div class="widget-corner">
+        <span class="label">CURRENT STAGE</span>
+        <span class="val">STUDIO 01 / HIGH-FREQ</span>
+    </div>
+
+    <!-- MAIN EDITORIAL CONTENT -->
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <span class="hero-tag">ORGANIC SOUND DESIGN STUDIO</span>
+            <h1 class="hero-title">
+                SPACE<br>
+                <span class="accent-block">SOUND</span>
+            </h1>
+
+            <div class="hero-description-block">
+                <p class="hero-p">
+                    Tactile foley recording, organic sound textures, and procedural audio design for interactive media & film.
+                </p>
+                <div class="hero-meta-spec">
+                    [ SPECIFICATIONS ]<br>
+                    • 192kHz Multi-Channel Foley Stage<br>
+                    • Custom Physical Prop Library<br>
+                    • Wwise & Unreal Engine 5 Integration
+                </div>
+            </div>
+        </section>
+
+        <!-- WORKS SHOWCASE -->
+        <div class="section-separator" id="projects">
+            <h2>REEL SHOWCASE</h2>
+            <span class="section-num">01 / REELS</span>
+        </div>
+
+        <div class="showcase-stack">
+            <!-- REEL 1 -->
+            <div class="project-row">
+                <div>
+                    <span class="project-meta">GAME AUDIO / UE5</span>
+                    <h3 class="project-title">FOOTSTEP & ARMOR FOLEY</h3>
+                    <p class="project-desc">High-resolution footstep and material recordings for Unreal Engine 5 across 12 distinct terrain surface types.</p>
+                </div>
+                <div class="reel-container">
+                    <span class="reel-overlay-label">REEL 01</span>
+                    <video class="reel-video" controls poster="https://via.placeholder.com/380x500/111113/ffffff?text=REEL+PREVIEW">
+                        <source src="your-reel-01.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- REEL 2 -->
+            <div class="project-row">
+                <div>
+                    <span class="project-meta">FOLEY STAGE</span>
+                    <h3 class="project-title">TACTILE PROPS & CREATURES</h3>
+                    <p class="project-desc">Organic prop captures and detailed micro-textures recorded for fantasy creature movement and motion graphics.</p>
+                </div>
+                <div class="reel-container">
+                    <span class="reel-overlay-label">REEL 02</span>
+                    <video class="reel-video" controls poster="https://via.placeholder.com/380x500/111113/ffffff?text=REEL+PREVIEW">
+                        <source src="your-reel-02.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- REEL 3 -->
+            <div class="project-row">
+                <div>
+                    <span class="project-meta">HYBRID SYNTHESIS</span>
+                    <h3 class="project-title">VEHICLE & IMPACT AUDIO</h3>
+                    <p class="project-desc">Blending physical foley impacts with deep analog synthesis to produce punchy, cinematic soundscapes.</p>
+                </div>
+                <div class="reel-container">
+                    <span class="reel-overlay-label">REEL 03</span>
+                    <video class="reel-video" controls poster="https://via.placeholder.com/380x500/111113/ffffff?text=REEL+PREVIEW">
+                        <source src="your-reel-03.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT SECTION -->
+        <div class="section-separator" id="about">
+            <h2>ABOUT STUDIO</h2>
+            <span class="section-num">02 / PROFILE</span>
+        </div>
+
+        <div class="about-editorial">
+            <h3 class="about-heading">ABOUT SPACE SOUND</h3>
+            <p class="about-body">
+                Insert your custom text here. Share your studio philosophy, equipment setups, achievements, or contact details.
+            </p>
+        </div>
+    </main>
+
+    <!-- CONTACT MODAL -->
+    <div class="modal-overlay" id="contact">
+        <div class="modal-drawer">
+            <button class="close-btn" onclick="closeModal('contact')">&times;</button>
+            <h2 style="font-family:'Syne'; font-size: 3rem; font-weight:800; margin-bottom: 2rem;">CONTACT</h2>
+            <form onsubmit="event.preventDefault(); alert('Message sent!'); closeModal('contact');">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <textarea rows="6" placeholder="Project details..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">SEND TRANSMISSION</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* BACKGROUND CONTOUR WAVES CANVAS */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let time = 0;
+
+        function drawContourBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time += 0.003;
+
+            // Soft organic background blob
+            ctx.beginPath();
+            const blobX = canvas.width * 0.5 + Math.sin(time) * 40;
+            const blobY = canvas.height * 0.25 + Math.cos(time * 0.8) * 30;
+            ctx.ellipse(blobX, blobY, 320, 180, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
+            ctx.fill();
+
+            // Fine contour waves
+            ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
+            ctx.lineWidth = 1.2;
+
+            const wavePaths = [
+                { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
+                { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
+                { yOffset: 0.65, amp: 90, freq: 0.0011, speed: 1.2 },
+                { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
+            ];
+
+            wavePaths.forEach((w) => {
+                ctx.beginPath();
+                const startY = canvas.height * w.yOffset;
+                ctx.moveTo(0, startY);
+
+                for (let x = 0; x <= canvas.width; x += 20) {
+                    const y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
+                              Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            });
+
+            requestAnimationFrame(drawContourBackground);
+        }
+        drawContourBackground();
+
+        /* REALISTIC WIND & LEAVES AMBIENT SOUND GENERATOR */
+        let audioCtx = null;
+        let isAmbientPlaying = false;
+        let windFilter = null;
+        let windGain = null;
+        let windOsc = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleAmbient() {
+            initAudio();
+            const btn = document.getElementById('ambient-btn');
+
+            if (!isAmbientPlaying) {
+                startWindAndLeaves();
+                btn.classList.add('active');
+                isAmbientPlaying = true;
+            } else {
+                stopWindAndLeaves();
+                btn.classList.remove('active');
+                isAmbientPlaying = false;
+            }
+        }
+
+        function startWindAndLeaves() {
+            // 1. Wind Noise Buffer
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.012; // Lower volume base
+                b6 = white * 0.115926;
+            }
+
+            const windNoise = audioCtx.createBufferSource();
+            windNoise.buffer = noiseBuffer;
+            windNoise.loop = true;
+
+            windFilter = audioCtx.createBiquadFilter();
+            windFilter.type = 'lowpass';
+            windFilter.frequency.setValueAtTime(220, audioCtx.currentTime);
+
+            windGain = audioCtx.createGain();
+            windGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+
+            windNoise.connect(windFilter);
+            windFilter.connect(windGain);
+            windGain.connect(audioCtx.destination);
+
+            windNoise.start();
+
+            // 2. Slow LFO for Gusting Wind Motion
+            windOsc = audioCtx.createOscillator();
+            windOsc.frequency.setValueAtTime(0.12, audioCtx.currentTime);
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.setValueAtTime(140, audioCtx.currentTime);
+
+            windOsc.connect(lfoGain);
+            lfoGain.connect(windFilter.frequency);
+            windOsc.start();
+
+            // 3. Periodic Rustling Leaves (High-frequency noise bursts)
+            window.leavesInterval = setInterval(() => {
+                if (isAmbientPlaying && Math.random() > 0.3) {
+                    triggerLeafRustle();
+                }
+            }, 2500);
+        }
+
+        function triggerLeafRustle() {
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const duration = 0.1 + Math.random() * 0.25;
+
+            const bufferSize = audioCtx.sampleRate * duration;
+            const leafBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = leafBuffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+            }
+
+            const leafSource = audioCtx.createBufferSource();
+            leafSource.buffer = leafBuffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1800 + Math.random() * 1200, now);
+            filter.Q.setValueAtTime(1.5, now);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.015, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+            leafSource.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            leafSource.start(now);
+        }
+
+        function stopWindAndLeaves() {
+            if (windGain) {
+                windGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+            }
+            if (window.leavesInterval) clearInterval(window.leavesInterval);
+        }
+
+        /* MODAL CONTROLS */
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+</body>
+</html>
