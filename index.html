@@ -587,15 +587,15 @@
             <span>FOLEY RECORDING & GAME AUDIO</span>
         </a>
                 
-        <div class="header-controls">
-            <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
-                <span id="ambient-dot"></span> AMBIENT
-            </button>
-            <button class="ambient-btn" id="library-btn" onclick="openLibraryModal()">
+       <!-- PUT THIS HTML IN YOUR HEADER CONTROLS -->
+<div class="header-controls">
+    <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
+        <span id="ambient-dot">○</span><span id="ambient-text">SIGNAL OFF</span>
+    </button>
+    <button class="ambient-btn" id="library-btn" onclick="openLibraryModal()">
         <span></span> LIBRARY
     </button>
-           
-        </div>
+</div>
     </header>
 
 
@@ -795,32 +795,36 @@ function drawContourBackground() {
 drawContourBackground();
     
 
-       /* CUSTOM AMBIENT AUDIO PLAYER WITH VOLUME CONTROL */
-const ambientAudio = new Audio('120_Ambience_01.wav'); 
+       let isAmbientPlaying = false;
+const ambientAudio = new Audio('music.mp3'); // Update filename here if your audio file is named differently
 ambientAudio.loop = true;
-ambientAudio.volume = 0.4;
-
-let isAmbientPlaying = false;
 
 function toggleAmbient() {
+    if (typeof clickSound !== 'undefined') {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    }
+
     const btn = document.getElementById('ambient-btn');
+    const dot = document.getElementById('ambient-dot');
+    const text = document.getElementById('ambient-text');
 
     if (!isAmbientPlaying) {
         ambientAudio.play().then(() => {
-            btn.classList.add('active');
             isAmbientPlaying = true;
+            if (btn) btn.classList.add('active');
+            if (dot) dot.textContent = '●';
+            if (text) text.textContent = 'SIGNAL ON';
         }).catch(err => {
             console.log("Audio playback failed (check file name/path):", err);
         });
     } else {
         ambientAudio.pause();
-        btn.classList.remove('active');
         isAmbientPlaying = false;
+        if (btn) btn.classList.remove('active');
+        if (dot) dot.textContent = '○';
+        if (text) text.textContent = 'SIGNAL OFF';
     }
-}
-
-function updateVolume(val) {
-    ambientAudio.volume = parseFloat(val);
 }
        
         // Sound effects for the ambient button using local files
