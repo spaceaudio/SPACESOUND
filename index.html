@@ -572,6 +572,44 @@
             color: #0d0d10 !important;
             border-color: var(--acid) !important;
         }
+
+        /* PUT THIS IN YOUR <style> BLOCK */
+.volume-slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 6px;
+}
+
+#volume-slider {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 6px;
+    height: 24px;
+    background: rgba(13, 13, 16, 0.15);
+    outline: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 6px;
+    background: #0d0d10;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 6px;
+    background: #0d0d10;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+}
 }
     </style>
 </head>
@@ -587,13 +625,18 @@
             <span>FOLEY RECORDING & GAME AUDIO</span>
         </a>
                 
-       <!-- PUT THIS HTML IN YOUR HEADER CONTROLS -->
+<!-- PUT THIS IN YOUR HEADER CONTROLS -->
 <div class="header-controls">
+    <!-- Vertical Volume Slider Container -->
+    <div class="volume-slider-container">
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateVolume(this.value)" title="Volume">
+    </div>
+
     <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
-        <span id="ambient-dot">○</span><span id="ambient-text">SIGNAL OFF</span>
+        <span id="ambient-dot">○</span> <span id="ambient-text">SIGNAL OFF</span>
     </button>
     <button class="ambient-btn" id="library-btn" onclick="openLibraryModal()">
-        <span></span> LIBRARY
+        <span></span>LIBRARY
     </button>
 </div>
     </header>
