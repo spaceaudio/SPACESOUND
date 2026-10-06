@@ -788,64 +788,59 @@ window.addEventListener('mousemove', (e) => {
     mouseY = e.clientY;
 });
 
-let time = 0;
-
-function drawContourBackground() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    time += 0.003;
-
-    // Smoothly glide the blob towards the mouse position
-    blobX += (mouseX - blobX) * 0.05;
-    blobY += (mouseY - blobY) * 0.05;
-
-    // Soft organic background blob following the mouse
-    ctx.beginPath();
-    ctx.ellipse(blobX, blobY, 320, 180, Math.PI / 6, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
-    ctx.fill();
-
-    const wavePaths = [
-        { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
-        { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
-        { yOffset: 0.65, amp: 90, freq: 0.0011, speed: 1.2 },
-        { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
-    ];
-
-    wavePaths.forEach((w, index) => {
-        ctx.beginPath();
-        const startY = canvas.height * w.yOffset;
-        ctx.moveTo(0, startY);
-
-        for (let x = 0; x <= canvas.width; x += 20) {
-            let y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
-                      Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
-
-            // Push the lines away as your mouse gets close to them
-            const distX = x - mouseX;
-            const distY = y - mouseY;
-            const distance = Math.sqrt(distX * distX + distY * distY);
+let step = 0;
+        function drawContourBackground() {
+            if (!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            if (distance < 200) {
-                const force = (1 - distance / 200) * 35;
-                y += (distY > 0 ? force : -force);
+            // Acid-Green / Cyber-Glow Touch alle paar Sekunden
+            ctx.strokeStyle = 'rgba(13, 13, 16, 0.12)';
+            ctx.lineWidth = 1;
+
+            const rows = 18;
+            const cols = 24;
+            const spacingX = canvas.width / cols;
+            const spacingY = canvas.height / rows;
+
+            step += 0.03;
+
+            for (let r = 0; r <= rows; r++) {
+                ctx.beginPath();
+                for (let c = 0; c <= cols; c++) {
+                    let x = c * spacingX;
+                    let y = r * spacingY;
+
+                    let dx = mouse.x - x;
+                    let dy = mouse.y - y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // 1. FREAKY EFFEKT: Der "Black Hole" Anziehungspunkt (Zieht Linien wild ein statt sie wegzudrücken)
+                    let maxDist = 250;
+                    if (dist < maxDist) {
+                        let force = (1 - dist / maxDist) * 50;
+                        // Statt + wird hier minus gerechnet -> zieht das Netz zum Cursor wie ein Magnetfeld
+                        x -= (dx / dist) * force * Math.cos(step);
+                        y -= (dy / dist) * force * Math.sin(step);
+                    }
+
+                    // 2. FREAKY EFFEKT: Digitaler Wellen-Glitch (Verzerrt das Gitter in wellenartigen Schüben)
+                    let glitch = Math.sin(r * c + step * 2) * 15;
+                    y += glitch + Math.sin(c * 0.4 + step) * 15;
+                    x += Math.cos(r * 0.3 + step) * 10;
+
+                    if (c === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
             }
 
-            ctx.lineTo(x, y);
-        }
+            // 3. FREAKY EFFEKT: Ein "Schockwellen-Kreis", der dem Mauszeiger mit minimaler Verzögerung folgt
+            ctx.beginPath();
+            ctx.arc(mouse.x, mouse.y, 80 + Math.sin(step * 4) * 20, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.15)'; // Dezenter Acid-Green Schein
+            ctx.stroke();
 
-        // Make the second line pop out in your signature acid-lime color!
-        if (index === 1) {
-            ctx.strokeStyle = 'rgba(212, 255, 0, 0.5)';
-            ctx.lineWidth = 2;
-        } else {
-            ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
-            ctx.lineWidth = 1.4;
-        }
-
-        ctx.stroke();
-    });
-
-    requestAnimationFrame(drawContourBackground);
+            requestAnimationFrame(drawContourBackground);
 }
 drawContourBackground();
     
