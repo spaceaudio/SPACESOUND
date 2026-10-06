@@ -804,7 +804,7 @@ const clickSound = new Audio('click.mp3');
 
 // Adjust volume (0.0 to 1.0)
 hoverSound.volume = 0.2;
-clickSound.volume = 0.4;
+clickSound.volume = 0.2;
 
 // Attach hover and click events to the ambient button
 const ambientBtn = document.getElementById('ambient-btn');
@@ -815,6 +815,40 @@ if (ambientBtn) {
     });
 
     ambientBtn.addEventListener('click', () => {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    });
+}
+        // Sound effects setup
+const hoverSound = new Audio('hover.mp3');
+const clickSound = new Audio('click.mp3');
+
+hoverSound.volume = 0.2;
+clickSound.volume = 0.2;
+
+// 1. Attach to Ambient Button
+const ambientBtn = document.getElementById('ambient-btn');
+if (ambientBtn) {
+    ambientBtn.addEventListener('mouseenter', () => {
+        hoverSound.currentTime = 0;
+        hoverSound.play().catch(e => {});
+    });
+
+    ambientBtn.addEventListener('click', () => {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    });
+}
+
+// 2. PASTE THIS NEW CODE HERE FOR THE LIBRARY BUTTON
+const libraryBtn = document.getElementById('library-btn');
+if (libraryBtn) {
+    libraryBtn.addEventListener('mouseenter', () => {
+        hoverSound.currentTime = 0;
+        hoverSound.play().catch(e => {});
+    });
+
+    libraryBtn.addEventListener('click', () => {
         clickSound.currentTime = 0;
         clickSound.play().catch(e => {});
     });
