@@ -847,15 +847,24 @@ function drawContourBackground() {
 }
 drawContourBackground();
     
-    // --- GLOBAL AUDIO & STATE ---
+   // --- AUDIO & BUTTON CONTROLS ---
     let isAmbientPlaying = false;
-    const ambientAudio = new Audio('assets/ambient.mp3');
+    const ambientAudio = new Audio('music.mp3');
     ambientAudio.loop = true;
 
-    const clickSound = new Audio('assets/click.mp3');
+    const clickSound = new Audio('click.mp3');
     clickSound.volume = 0.3;
 
-    // --- SIGNAL & VOLUME CONTROLS ---
+    const hoverSound = new Audio('hover.mp3');
+    hoverSound.volume = 0.15;
+
+    document.querySelectorAll('button, input[type="range"]').forEach(element => {
+        element.addEventListener('mouseenter', () => {
+            hoverSound.currentTime = 0;
+            hoverSound.play().catch(e => {});
+        });
+    });
+
     function toggleAmbient() {
         if (typeof clickSound !== 'undefined') {
             clickSound.currentTime = 0;
@@ -890,7 +899,7 @@ drawContourBackground();
         }
     }
 
-    // --- LIBRARY DRAWER CONTROLS ---
+    // --- LIBRARY DRAWER TOGGLE ---
     function openLibraryModal() {
         if (typeof clickSound !== 'undefined') {
             clickSound.currentTime = 0;
@@ -898,26 +907,33 @@ drawContourBackground();
         }
         
         const drawer = document.getElementById('library-drawer');
-        if (drawer) drawer.classList.add('active');
-
         const libBtn = document.getElementById('library-btn');
-        if (libBtn) libBtn.classList.add('active-library');
+        const contactDrawer = document.getElementById('contact-drawer');
+        const contactBtn = document.getElementById('contact-btn');
+
+        if (contactDrawer) contactDrawer.classList.remove('active');
+        if (contactBtn) contactBtn.classList.remove('active-contact');
+
+        if (drawer) {
+            drawer.classList.toggle('active');
+            if (libBtn) {
+                if (drawer.classList.contains('active')) {
+                    libBtn.classList.add('active-library');
+                } else {
+                    libBtn.classList.remove('active-library');
+                }
+            }
+        }
     }
 
     function closeLibrary() {
-        if (typeof clickSound !== 'undefined') {
-            clickSound.currentTime = 0;
-            clickSound.play().catch(e => {});
-        }
-        
         const drawer = document.getElementById('library-drawer');
-        if (drawer) drawer.classList.remove('active');
-
         const libBtn = document.getElementById('library-btn');
+        if (drawer) drawer.classList.remove('active');
         if (libBtn) libBtn.classList.remove('active-library');
     }
 
-    // --- CONTACT DRAWER CONTROLS ---
+    // --- CONTACT DRAWER TOGGLE ---
     function openContactModal() {
         if (typeof clickSound !== 'undefined') {
             clickSound.currentTime = 0;
@@ -925,22 +941,29 @@ drawContourBackground();
         }
         
         const drawer = document.getElementById('contact-drawer');
-        if (drawer) drawer.classList.add('active');
-
         const contactBtn = document.getElementById('contact-btn');
-        if (contactBtn) contactBtn.classList.add('active-contact');
+        const libDrawer = document.getElementById('library-drawer');
+        const libBtn = document.getElementById('library-btn');
+
+        if (libDrawer) libDrawer.classList.remove('active');
+        if (libBtn) libBtn.classList.remove('active-library');
+
+        if (drawer) {
+            drawer.classList.toggle('active');
+            if (contactBtn) {
+                if (drawer.classList.contains('active')) {
+                    contactBtn.classList.add('active-contact');
+                } else {
+                    contactBtn.classList.remove('active-contact');
+                }
+            }
+        }
     }
 
     function closeContact() {
-        if (typeof clickSound !== 'undefined') {
-            clickSound.currentTime = 0;
-            clickSound.play().catch(e => {});
-        }
-        
         const drawer = document.getElementById('contact-drawer');
-        if (drawer) drawer.classList.remove('active');
-
         const contactBtn = document.getElementById('contact-btn');
+        if (drawer) drawer.classList.remove('active');
         if (contactBtn) contactBtn.classList.remove('active-contact');
     }
 
