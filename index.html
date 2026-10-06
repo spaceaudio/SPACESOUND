@@ -989,7 +989,7 @@ if (libDrawer) {
     </div>
 </div> 
 
-    // PUT THIS IN YOUR <script> SECTION
+   
 function openContactModal() {
     if (typeof clickSound !== 'undefined') {
         clickSound.currentTime = 0;
@@ -1023,7 +1023,43 @@ if (contactDrawer) {
             closeContact();
         }
     });
-}    
+} 
+        <!-- Paste your script code right here, above the closing script and body tags -->
+    function openContactModal() {
+        if (typeof clickSound !== 'undefined') {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {});
+        }
+        
+        const drawer = document.getElementById('contact-drawer');
+        if (drawer) drawer.classList.add('active');
+
+        const contactBtn = document.getElementById('contact-btn');
+        if (contactBtn) contactBtn.classList.add('active-contact');
+    }
+
+    function closeContact() {
+        if (typeof clickSound !== 'undefined') {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {});
+        }
+        
+        const drawer = document.getElementById('contact-drawer');
+        if (drawer) drawer.classList.remove('active');
+
+        const contactBtn = document.getElementById('contact-btn');
+        if (contactBtn) contactBtn.classList.remove('active-contact');
+    }
+
+    const contactDrawer = document.getElementById('contact-drawer');
+    if (contactDrawer) {
+        contactDrawer.addEventListener('click', (e) => {
+            if (e.target.id === 'contact-drawer') {
+                closeContact();
+            }
+        });
+    }
+
     </script>
 </body>
 </html>
