@@ -565,6 +565,13 @@
                 right: 1.5rem;
             }
         }
+
+      
+        .ambient-btn.active-library {
+            background: var(--acid) !important;
+            color: #0d0d10 !important;
+            border-color: var(--acid) !important;
+        }
 }
     </style>
 </head>
@@ -582,10 +589,10 @@
                 
         <div class="header-controls">
             <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
-                <span id="ambient-dot">🍃</span> AMBIENT
+                <span id="ambient-dot"> </span> AMBIENT
             </button>
             <button class="ambient-btn" id="library-btn" onclick="openLibraryModal()">
-        <span>📂</span> LIBRARY
+        <span> </span> LIBRARY
     </button>
            
         </div>
@@ -832,6 +839,50 @@ if (libraryBtn) {
     libraryBtn.addEventListener('click', () => {
         clickSound.currentTime = 0;
         clickSound.play().catch(e => {});
+    });
+    
+}
+        function openLibraryModal() {
+    if (typeof clickSound !== 'undefined') {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    }
+    
+    // Open the side drawer
+    const drawer = document.getElementById('library-drawer');
+    drawer.classList.add('active');
+
+    // Turn the library button acid color
+    const libBtn = document.getElementById('library-btn');
+    if (libBtn) {
+        libBtn.classList.add('active-library');
+    }
+}
+
+function closeLibrary() {
+    if (typeof clickSound !== 'undefined') {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    }
+    
+    // Close the side drawer
+    const drawer = document.getElementById('library-drawer');
+    drawer.classList.remove('active');
+
+    // Remove the acid color from the library button
+    const libBtn = document.getElementById('library-btn');
+    if (libBtn) {
+        libBtn.classList.remove('active-library');
+    }
+}
+
+// Also make sure clicking outside the drawer panel closes it and resets the button
+const libDrawer = document.getElementById('library-drawer');
+if (libDrawer) {
+    libDrawer.addEventListener('click', (e) => {
+        if (e.target.id === 'library-drawer') {
+            closeLibrary();
+        }
     });
 }
     </script>
