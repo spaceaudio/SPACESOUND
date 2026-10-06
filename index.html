@@ -847,184 +847,78 @@ function drawContourBackground() {
 }
 drawContourBackground();
     
+<script>
+    // --- GLOBAL AUDIO & STATE ---
+    let isAmbientPlaying = false;
+    const ambientAudio = new Audio('assets/ambient.mp3');
+    ambientAudio.loop = true;
 
-       let isAmbientPlaying = false;
-const ambientAudio = new Audio('music.mp3'); // Update filename here if your audio file is named differently
-ambientAudio.loop = true;
+    const clickSound = new Audio('assets/click.mp3');
+    clickSound.volume = 0.3;
 
-function toggleAmbient() {
-    if (typeof clickSound !== 'undefined') {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    }
-
-    const btn = document.getElementById('ambient-btn');
-    const dot = document.getElementById('ambient-dot');
-    const text = document.getElementById('ambient-text');
-
-    if (!isAmbientPlaying) {
-        ambientAudio.play().then(() => {
-            isAmbientPlaying = true;
-            if (btn) btn.classList.add('active');
-            if (dot) dot.textContent = '●';
-            if (text) text.textContent = 'SIGNAL ON';
-        }).catch(err => {
-            console.log("Audio playback failed (check file name/path):", err);
-        });
-    } else {
-        ambientAudio.pause();
-        isAmbientPlaying = false;
-        if (btn) btn.classList.remove('active');
-        if (dot) dot.textContent = '○';
-        if (text) text.textContent = 'SIGNAL OFF';
-    }
-}
-       
-        // Sound effects for the ambient button using local files
-const hoverSound = new Audio('hover.mp3');
-const clickSound = new Audio('click.mp3');
-
-// Adjust volume (0.0 to 1.0)
-hoverSound.volume = 0.2;
-clickSound.volume = 0.2;
-
-// Attach hover and click events to the ambient button
-const ambientBtn = document.getElementById('ambient-btn');
-if (ambientBtn) {
-    ambientBtn.addEventListener('mouseenter', () => {
-        hoverSound.currentTime = 0;
-        hoverSound.play().catch(e => {});
-    });
-
-    ambientBtn.addEventListener('click', () => {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    });
-}
- 
-
-// 2. PASTE THIS NEW CODE HERE FOR THE LIBRARY BUTTON
-const libraryBtn = document.getElementById('library-btn');
-if (libraryBtn) {
-    libraryBtn.addEventListener('mouseenter', () => {
-        hoverSound.currentTime = 0;
-        hoverSound.play().catch(e => {});
-    });
-
-    libraryBtn.addEventListener('click', () => {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    });
-    
-}
-        function openLibraryModal() {
-    if (typeof clickSound !== 'undefined') {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    }
-    
-    // Open the side drawer
-    const drawer = document.getElementById('library-drawer');
-    drawer.classList.add('active');
-
-    // Turn the library button acid color
-    const libBtn = document.getElementById('library-btn');
-    if (libBtn) {
-        libBtn.classList.add('active-library');
-    }
-}
-
-function closeLibrary() {
-    if (typeof clickSound !== 'undefined') {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    }
-    
-    // Close the side drawer
-    const drawer = document.getElementById('library-drawer');
-    drawer.classList.remove('active');
-
-    // Remove the acid color from the library button
-    const libBtn = document.getElementById('library-btn');
-    if (libBtn) {
-        libBtn.classList.remove('active-library');
-    }
-}
-
-// Also make sure clicking outside the drawer panel closes it and resets the button
-const libDrawer = document.getElementById('library-drawer');
-if (libDrawer) {
-    libDrawer.addEventListener('click', (e) => {
-        if (e.target.id === 'library-drawer') {
-            closeLibrary();
+    // --- SIGNAL & VOLUME CONTROLS ---
+    function toggleAmbient() {
+        if (typeof clickSound !== 'undefined') {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {});
         }
-    });
-}
 
-<div class="library-drawer" id="contact-drawer">
-    <div class="drawer-content">
-        <div class="drawer-header">
-            <h2>[ PROJECT INQUIRY ]</h2>
-            <button class="close-btn" onclick="closeContact()">[ CLOSE × ]</button>
-        </div>
-        <div class="drawer-body">
-            <p style="margin-bottom: 24px; opacity: 0.7; font-size: 0.9rem;">Available for foley, game audio integration, and sound design commissions.</p>
-            
-            <form onsubmit="event.preventDefault(); alert('Inquiry sent successfully!'); closeContact();" style="display: flex; flex-direction: column; gap: 16px;">
-                <div>
-                    <label style="display: block; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px;">YOUR NAME</label>
-                    <input type="text" required style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(13,13,16,0.2); outline: none; font-family: inherit;">
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px;">EMAIL ADDRESS</label>
-                    <input type="email" required style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(13,13,16,0.2); outline: none; font-family: inherit;">
-                </div>
-                <div>
-                    <label style="display: block; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px;">PROJECT DETAILS / AUDIO BRIEF</label>
-                    <textarea rows="5" required style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(13,13,16,0.2); outline: none; font-family: inherit; resize: vertical;"></textarea>
-                </div>
-                <button type="submit" class="ambient-btn" style="background: #0d0d10; color: #f7f6f2; margin-top: 10px; width: 100%; justify-content: center;">SEND INQUIRY</button>
-            </form>
-        </div>
-    </div>
-</div> 
+        const btn = document.getElementById('ambient-btn');
+        const dot = document.getElementById('ambient-dot');
+        const text = document.getElementById('ambient-text');
 
-   
-function openContactModal() {
-    if (typeof clickSound !== 'undefined') {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    }
-    
-    const drawer = document.getElementById('contact-drawer');
-    if (drawer) drawer.classList.add('active');
-
-    const contactBtn = document.getElementById('contact-btn');
-    if (contactBtn) contactBtn.classList.add('active-contact');
-}
-
-function closeContact() {
-    if (typeof clickSound !== 'undefined') {
-        clickSound.currentTime = 0;
-        clickSound.play().catch(e => {});
-    }
-    
-    const drawer = document.getElementById('contact-drawer');
-    if (drawer) drawer.classList.remove('active');
-
-    const contactBtn = document.getElementById('contact-btn');
-    if (contactBtn) contactBtn.classList.remove('active-contact');
-}
-
-const contactDrawer = document.getElementById('contact-drawer');
-if (contactDrawer) {
-    contactDrawer.addEventListener('click', (e) => {
-        if (e.target.id === 'contact-drawer') {
-            closeContact();
+        if (!isAmbientPlaying) {
+            ambientAudio.play().then(() => {
+                isAmbientPlaying = true;
+                if (btn) btn.classList.add('active');
+                if (dot) dot.textContent = '●';
+                if (text) text.textContent = 'SIGNAL ON';
+            }).catch(err => {
+                console.log("Audio playback failed:", err);
+            });
+        } else {
+            ambientAudio.pause();
+            isAmbientPlaying = false;
+            if (btn) btn.classList.remove('active');
+            if (dot) dot.textContent = '○';
+            if (text) text.textContent = 'SIGNAL OFF';
         }
-    });
-} 
-        <!-- Paste your script code right here, above the closing script and body tags -->
+    }
+
+    function updateVolume(val) {
+        if (typeof ambientAudio !== 'undefined') {
+            ambientAudio.volume = parseFloat(val);
+        }
+    }
+
+    // --- LIBRARY DRAWER CONTROLS ---
+    function openLibraryModal() {
+        if (typeof clickSound !== 'undefined') {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {});
+        }
+        
+        const drawer = document.getElementById('library-drawer');
+        if (drawer) drawer.classList.add('active');
+
+        const libBtn = document.getElementById('library-btn');
+        if (libBtn) libBtn.classList.add('active-library');
+    }
+
+    function closeLibrary() {
+        if (typeof clickSound !== 'undefined') {
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {});
+        }
+        
+        const drawer = document.getElementById('library-drawer');
+        if (drawer) drawer.classList.remove('active');
+
+        const libBtn = document.getElementById('library-btn');
+        if (libBtn) libBtn.classList.remove('active-library');
+    }
+
+    // --- CONTACT DRAWER CONTROLS ---
     function openContactModal() {
         if (typeof clickSound !== 'undefined') {
             clickSound.currentTime = 0;
@@ -1051,14 +945,20 @@ if (contactDrawer) {
         if (contactBtn) contactBtn.classList.remove('active-contact');
     }
 
-    const contactDrawer = document.getElementById('contact-drawer');
-    if (contactDrawer) {
-        contactDrawer.addEventListener('click', (e) => {
-            if (e.target.id === 'contact-drawer') {
-                closeContact();
-            }
-        });
-    }
+    // --- CLICK OUTSIDE TO CLOSE ---
+    window.addEventListener('click', (e) => {
+        const libDrawer = document.getElementById('library-drawer');
+        const contactDrawer = document.getElementById('contact-drawer');
+        
+        if (libDrawer && e.target === libDrawer) {
+            closeLibrary();
+        }
+        if (contactDrawer && e.target === contactDrawer) {
+            closeContact();
+        }
+    });
+</script>
+       
 
     </script>
 </body>
