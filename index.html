@@ -620,7 +620,10 @@
     border-radius: 2px;
     cursor: pointer;
 }
-        
+  #volume-slider {
+        pointer-events: auto; /* Stellt sicher, dass er bedienbar ist */
+        cursor: pointer;
+    }      
     </style>
 </head>
 <body>
@@ -639,7 +642,7 @@
 <div class="header-controls">
     <!-- Vertical Volume Slider Container -->
     <div class="volume-slider-container">
-        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateVolume(this.value)" title="Volume">
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateVolume(this.value)" onclick = "event.stopPropagation()" title="Volume">
     </div>
 
     <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
