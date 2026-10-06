@@ -572,7 +572,14 @@
             color: #0d0d10 !important;
             border-color: var(--acid) !important;
         }
-
+        
+/* PUT THIS IN YOUR <style> BLOCK */
+.ambient-btn.active-contact {
+    background: var(--acid) !important;
+    color: #0d0d10 !important;
+    border-color: var(--acid) !important;
+}
+        
         /* PUT THIS IN YOUR <style> BLOCK */
 .volume-slider-container {
     display: flex;
@@ -638,6 +645,10 @@
     <button class="ambient-btn" id="library-btn" onclick="openLibraryModal()">
         <span></span>LIBRARY
     </button>
+    <!-- PUT THIS INSIDE YOUR <div class="header-controls"> -->
+<button class="ambient-btn" id="contact-btn" onclick="openContactModal()">
+    <span></span>CONTACT
+</button>
 </div>
     </header>
 
@@ -949,6 +960,70 @@ if (libDrawer) {
         }
     });
 }
+
+<div class="library-drawer" id="contact-drawer">
+    <div class="drawer-content">
+        <div class="drawer-header">
+            <h2>[ PROJECT INQUIRY ]</h2>
+            <button class="close-btn" onclick="closeContact()">[ CLOSE × ]</button>
+        </div>
+        <div class="drawer-body">
+            <p style="margin-bottom: 24px; opacity: 0.7; font-size: 0.9rem;">Available for foley, game audio integration, and sound design commissions.</p>
+            
+            <form onsubmit="event.preventDefault(); alert('Inquiry sent successfully!'); closeContact();" style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <label style="display: block; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px;">YOUR NAME</label>
+                    <input type="text" required style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(13,13,16,0.2); outline: none; font-family: inherit;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px;">EMAIL ADDRESS</label>
+                    <input type="email" required style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(13,13,16,0.2); outline: none; font-family: inherit;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 6px;">PROJECT DETAILS / AUDIO BRIEF</label>
+                    <textarea rows="5" required style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(13,13,16,0.2); outline: none; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" class="ambient-btn" style="background: #0d0d10; color: #f7f6f2; margin-top: 10px; width: 100%; justify-content: center;">SEND INQUIRY</button>
+            </form>
+        </div>
+    </div>
+</div> 
+
+    // PUT THIS IN YOUR <script> SECTION
+function openContactModal() {
+    if (typeof clickSound !== 'undefined') {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    }
+    
+    const drawer = document.getElementById('contact-drawer');
+    if (drawer) drawer.classList.add('active');
+
+    const contactBtn = document.getElementById('contact-btn');
+    if (contactBtn) contactBtn.classList.add('active-contact');
+}
+
+function closeContact() {
+    if (typeof clickSound !== 'undefined') {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
+    }
+    
+    const drawer = document.getElementById('contact-drawer');
+    if (drawer) drawer.classList.remove('active');
+
+    const contactBtn = document.getElementById('contact-btn');
+    if (contactBtn) contactBtn.classList.remove('active-contact');
+}
+
+const contactDrawer = document.getElementById('contact-drawer');
+if (contactDrawer) {
+    contactDrawer.addEventListener('click', (e) => {
+        if (e.target.id === 'contact-drawer') {
+            closeContact();
+        }
+    });
+}    
     </script>
 </body>
 </html>
