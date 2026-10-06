@@ -620,6 +620,49 @@
     border-radius: 2px;
     cursor: pointer;
 }
+        
+/* --- DRAWER STYLING --- */
+.library-drawer {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Standardmäßig versteckt außerhalb des Bildschirms rechts */
+    width: 400px;
+    max-width: 100%;
+    height: 100vh;
+    background: #0d0d10; /* Dein Acid-Dark-Theme Look */
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Sanftes Reingleiten */
+    z-index: 1000; /* Ganz im Vordergrund */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Wenn die Klasse .active hinzugefügt wird, rutscht der Drawer ins Bild */
+.library-drawer.active {
+    right: 0;
+}
+
+.drawer-content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.drawer-body {
+    flex-grow: 1;
+    overflow-y: auto;
 }
     </style>
 </head>
@@ -982,7 +1025,31 @@ drawContourBackground();
             closeContact();
         }
     });
-       
+
+        <div class="library-drawer" id="library-drawer">
+    <div class="drawer-content">
+        <div class="drawer-header">
+            <h2>[ SOUND LIBRARY ]</h2>
+            <button class="close-btn" onclick="closeLibrary()">[ CLOSE × ]</button>
+        </div>
+        <div class="drawer-body">
+            <p style="opacity: 0.7; font-size: 0.9rem;">Browse sample packs, foley recordings, and sound kits here.</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="library-drawer" id="contact-drawer">
+    <div class="drawer-content">
+        <div class="drawer-header">
+            <h2>[ PROJECT INQUIRY ]</h2>
+            <button class="close-btn" onclick="closeContact()">[ CLOSE × ]</button>
+        </div>
+        <div class="drawer-body">
+            <p style="margin-bottom: 24px; opacity: 0.7; font-size: 0.9rem;">Available for foley, game audio integration, and sound design commissions.</p>
+        </div>
+    </div>
+</div>
 
     </script>
 </body>
