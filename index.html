@@ -589,10 +589,10 @@
                 
         <div class="header-controls">
             <button class="ambient-btn" id="ambient-btn" onclick="toggleAmbient()">
-                <span id="ambient-dot"> </span> AMBIENT
+                <span id="ambient-dot"></span> AMBIENT
             </button>
             <button class="ambient-btn" id="library-btn" onclick="openLibraryModal()">
-        <span> </span> LIBRARY
+        <span></span> LIBRARY
     </button>
            
         </div>
@@ -739,7 +739,7 @@ function drawContourBackground() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     time += 0.003;
 
-    // Smoothly glide the blob towards the mouse position (0.05 controls the lag/smoothness)
+    // Smoothly glide the blob towards the mouse position
     blobX += (mouseX - blobX) * 0.05;
     blobY += (mouseY - blobY) * 0.05;
 
@@ -749,10 +749,6 @@ function drawContourBackground() {
     ctx.fillStyle = 'rgba(235, 233, 224, 0.6)';
     ctx.fill();
 
-    // Fine contour waves
-    ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
-    ctx.lineWidth = 1.4;
-
     const wavePaths = [
         { yOffset: 0.2, amp: 80, freq: 0.0012, speed: 1 },
         { yOffset: 0.4, amp: 110, freq: 0.0009, speed: 0.8 },
@@ -760,22 +756,44 @@ function drawContourBackground() {
         { yOffset: 0.85, amp: 70, freq: 0.0015, speed: 0.9 }
     ];
 
-    wavePaths.forEach((w) => {
+    wavePaths.forEach((w, index) => {
         ctx.beginPath();
         const startY = canvas.height * w.yOffset;
         ctx.moveTo(0, startY);
 
         for (let x = 0; x <= canvas.width; x += 20) {
-            const y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
+            let y = startY + Math.sin(x * w.freq + time * w.speed) * w.amp +
                       Math.cos(x * 0.0005 + time) * (w.amp * 0.5);
+
+            // Push the lines away as your mouse gets close to them
+            const distX = x - mouseX;
+            const distY = y - mouseY;
+            const distance = Math.sqrt(distX * distX + distY * distY);
+            
+            if (distance < 200) {
+                const force = (1 - distance / 200) * 35;
+                y += (distY > 0 ? force : -force);
+            }
+
             ctx.lineTo(x, y);
         }
+
+        // Make the second line pop out in your signature acid-lime color!
+        if (index === 1) {
+            ctx.strokeStyle = 'rgba(212, 255, 0, 0.5)';
+            ctx.lineWidth = 2;
+        } else {
+            ctx.strokeStyle = 'rgba(13, 13, 16, 0.08)';
+            ctx.lineWidth = 1.4;
+        }
+
         ctx.stroke();
     });
 
     requestAnimationFrame(drawContourBackground);
 }
 drawContourBackground();
+    
 
        /* CUSTOM AMBIENT AUDIO PLAYER WITH VOLUME CONTROL */
 const ambientAudio = new Audio('120_Ambience_01.wav'); 
